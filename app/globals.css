@@ -1,26 +1,30 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --nav-height: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply min-h-screen flex flex-col
+}
+nav {
+  height: var(--nav-height);
+  @apply w-full p-4 flex justify-between items-center fixed top-0 left-0;
+}
+main {
+  margin-top: var(--nav-height);
+  @apply p-4 h-full flex flex-col items-center gap-4
+}
+form {
+  @apply flex flex-col gap-4;
+  label {
+    @apply flex items-center justify-start
+  }
+  input {
+    @apply border-1 px-4 py-2 rounded-lg
+  }
+}
+
+.btn {
+  @apply px-4 py-2 rounded-lg cursor-pointer
 }

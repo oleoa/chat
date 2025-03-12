@@ -21,8 +21,8 @@ function getRandomString(length: number) {
 export default function Home({ user_id, conversations, messages }: Props) {
 
   const [allSavedMessages, setAllSavedMessages] = useState(messages)
-  const [currentOpenConversation, setCurrentOpenConversation] = useState("1e111")
-  const [filteredMessages, setFilteredMessages] = useState(allSavedMessages.filter((m) => m.conversation_id == "1e111"))
+  const [currentOpenConversation, setCurrentOpenConversation] = useState("1")
+  const [filteredMessages, setFilteredMessages] = useState(allSavedMessages.filter((m) => m.conversation_id == "1"))
 
   const changeConversation = (conversation_id: string) => {
     setCurrentOpenConversation(conversation_id)

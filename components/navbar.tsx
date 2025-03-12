@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { createClient } from '@/supabase/server'
-import { signout } from '@/app/login/actions'
+import { signout } from '@/app/auth/actions'
 
 export default async function Navbar() {
 
   const supabase = await createClient()
   const { data, error } = await supabase.auth.getUser()
   const user = data.user
-  console.log("(log from navbar) User -> ", user)
 
   return (
     <nav>

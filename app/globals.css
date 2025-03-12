@@ -4,26 +4,28 @@
   --nav-height: 5rem;
 }
 
-body {
-  @apply min-h-screen flex flex-col
-}
+body { @apply min-h-screen flex flex-col }
+
 nav {
   height: var(--nav-height);
-  @apply w-full p-4 flex justify-between items-center fixed top-0 left-0;
+  @apply w-full p-4 flex justify-between items-center fixed top-0 left-0 border-b-2;
 }
+
 main {
-  margin-top: var(--nav-height);
-  @apply p-4 h-full flex flex-col items-center gap-4
+  padding-top: var(--nav-height);
+  @apply h-full w-full flex flex-col items-center gap-4 flex-grow
 }
-form {
-  @apply flex flex-col gap-4;
-  label {
-    @apply flex items-center justify-start
-  }
-  input {
-    @apply border-1 px-4 py-2 rounded-lg
-  }
-}
+
+h1 { @apply text-5xl }
+h2 { @apply text-4xl }
+h3 { @apply text-3xl }
+h4 { @apply text-2xl }
+h5 { @apply text-xl }
+h6 { @apply text-lg }
+
+form { @apply flex flex-col gap-4 }
+label { @apply flex items-center justify-start text-xl }
+input, textarea { @apply border-1 px-4 py-2 rounded-lg }
 
 .btn {
   @apply px-4 py-2 rounded-lg cursor-pointer

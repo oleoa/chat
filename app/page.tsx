@@ -9,10 +9,12 @@ export default async function Home() {
   const { data: user_data, error: user_error } = await supabase.auth.getUser()
   const user = user_data.user
 
-  if (!user)
+  if (!user || user_error)
     redirect('/login')
 
   const { data: conversations, error } = await supabase.rpc("get_user_conversations", { p_user_id: user.id });
+  if (error)
+    console.error("Error getting the conversations at main page: ", error)
 
   return (
     <main>

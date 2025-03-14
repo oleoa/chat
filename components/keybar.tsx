@@ -1,14 +1,19 @@
 "use client"
 
 interface Props {
-  handleNewMessage: Function
+  handleNewMessage: HandleNewMessage
+}
+
+interface HandleNewMessage {
+  (message: string): void
 }
 
 export default function Keybar({ handleNewMessage }: Props) {
 
   async function handleAction(formData: FormData) {
     const message = formData.get("message")
-    handleNewMessage(message)
+    if (message && typeof message == "string")
+      handleNewMessage(message)
   }
 
   return (

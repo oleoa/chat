@@ -2,7 +2,7 @@
 
 import { createClient } from '@/supabase/server'
 
-export async function search(formData: FormData): Promise<any[]> {
+export async function search(formData: FormData) {
   const supabase = await createClient()
   const search_username = formData.get("username") as string;
   const { data: searching_profile } = await supabase

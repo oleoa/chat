@@ -44,7 +44,7 @@ export async function signup(formData: FormData) {
   const user_id = data.user?.id ?? ""
   async function createProfile(user_id: string) {
     const supabase = await createClient()
-    const { data, error } = await supabase.from('profiles').insert({ user_id: user_id })
+    const { error } = await supabase.from('profiles').insert({ user_id: user_id })
     if (error) {
       redirect('/error')
     }

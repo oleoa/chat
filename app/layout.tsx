@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/navbar";
-import { redirect } from 'next/navigation'
-import { createClient } from '@/supabase/server'
 
 export const metadata: Metadata = {
   title: "chat",

@@ -25,6 +25,9 @@ export async function update(formData: FormData) {
     .update(profile_data)
     .eq("user_id", user.id)
 
+  if (error)
+    console.error("Error at updating the user info ", error)
+
   revalidatePath('/', 'layout')
   redirect('/profile')
 }

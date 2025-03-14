@@ -5,6 +5,9 @@ export default async function Profile() {
 
   const supabase = await createClient()
   const { data, error } = await supabase.auth.getUser()
+  if (!data || error)
+    console.error("Error at getting the logged user information: ", error)
+  
   const user = data.user
   const { data: profile } = await supabase
     .from("profiles")

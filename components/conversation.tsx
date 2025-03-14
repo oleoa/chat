@@ -1,14 +1,20 @@
 "use client";
 
+interface Conversation {
+  conversation_id: number,
+  group_name: string,
+  is_group: boolean,
+  participants: string[]
+}
+
 interface Props {
-  conversation: {
-    conversation_id: string,
-    group_name: string,
-    is_group: boolean,
-    participants: string[]
-  },
-  handleClick: Function,
+  conversation: Conversation,
+  handleClick: HandleClickFunction,
   currentlyOpened: boolean
+}
+
+interface HandleClickFunction {
+  (conversation_id: number): void
 }
 
 export default function Conversation({ conversation, handleClick, currentlyOpened }: Props) {

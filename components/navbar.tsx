@@ -6,6 +6,8 @@ export default async function Navbar() {
 
   const supabase = await createClient()
   const { data, error } = await supabase.auth.getUser()
+  if (error)
+    console.error("Error at getting the logged user: ", error)
   const user = data.user
 
   return (

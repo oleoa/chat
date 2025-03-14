@@ -3,20 +3,31 @@
 import { search } from "@/app/conversations/actions"
 import { useState } from "react";
 
-export default function Search() {
+interface Props {
+  handleNewConversation: HandleNewConversation
+}
 
-  const [searchString, setSearch] = useState("")
-  const [results, setResults] = useState<any[]>([])
+interface HandleNewConversation {
+  (user_id: string): void
+}
+
+export default function Search({ handleNewConversation }: Props) {
+
+  const [message, setMessage] = useState("")
 
   async function handleSearch(formData: FormData) {
     const res = await search(formData)
-    setResults(res)
+    if (!res || res.length == 0)
+      setMessage("Username not found")
+    else
+      handleNewConversation(res[0].user_id)
   }
 
   return (
     <div className='p-4 relative border-b-1'>
       <form action={handleSearch}>
-        <input type="text" name='username' value={searchString} onChange={(e) => setSearch((s) => e.target.value)}/>
+        <input type="text" name='username' placeholder="Search for a username"/>
+        {message}
       </form>
     </div>
   );

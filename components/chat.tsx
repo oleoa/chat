@@ -60,6 +60,17 @@ export default function Home({ user_id, conversations }: Props) {
       getMessagesFromDB()
   }, [currentlyOpenedConversation])
 
+  const channels = supabase.channel('custom-filter-channel')
+  .on(
+    'postgres_changes',
+    { event: '*', schema: 'public', table: 'messages', filter: 'conversation_id=eq.'+currentlyOpenedConversation },
+    (payload) => {
+      const newMessageArrived = payload.new
+      setCurrentlyLoadedMessages((m) => [newMessageArrived, ...m].sort((a, b) => a.id - b.id))
+    }
+  )
+  .subscribe()
+
   return (
       <div className='flex flex-grow w-screen'>
 

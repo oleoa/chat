@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from 'react';
+import { createClient } from '@/supabase/client'
+import { useEffect, useState } from 'react';
 import Search from '@/components/search';
 import Conversation from '@/components/conversation';
 import Message from '@/components/message';
@@ -8,54 +9,75 @@ import Keybar from '@/components/keybar';
 
 interface Props {
   user_id: string,
-  conversations: any[], // To It Later
-  messages: any[] // To It Later
+  conversations: any[]
 }
 
-function getRandomString(length: number) {
-  return [...Array(length)]
-      .map(() => Math.random().toString(36)[2]) // Get random character
-      .join('');
-}
+export default function Home({ user_id, conversations }: Props) {
 
-export default function Home({ user_id, conversations, messages }: Props) {
+  const supabase = createClient()
 
-  const [allSavedMessages, setAllSavedMessages] = useState(messages)
-  const [currentOpenConversation, setCurrentOpenConversation] = useState("1")
-  const [filteredMessages, setFilteredMessages] = useState(allSavedMessages.filter((m) => m.conversation_id == "1"))
+  const [currentlyOpenedConversation, setCurrentlyOpenedConversation] = useState(0)
+  const [currentlyLoadedMessages, setCurrentlyLoadedMessages] = useState<any[]>([]);
 
-  const changeConversation = (conversation_id: string) => {
-    setCurrentOpenConversation(conversation_id)
-    setFilteredMessages(allSavedMessages.filter((m) => m.conversation_id == conversation_id))
+  const changeConversation = (id: number): void => {
+    setCurrentlyOpenedConversation(id);
   }
 
-  const newMessage = (message: string) => {
-    const newMessage = 
-      {
-        id: getRandomString(10),
-        conversation_id: currentOpenConversation,
-        sender_id: user_id,
-        message: message,
-        created_at: 1741794403
+  const newMessage = (message: string): void => {
+    const sendNewMessage = async () => {
+      const { data, error } = await supabase.from("messages").insert([
+        { conversation_id: currentlyOpenedConversation, sender_id: user_id, message: message }
+      ]).select()
+      if (!data)
+        console.error("Error at sending the message")
+      else {
+        const newMessageId = data[0].id
+        const newMessageCreatedAt = data[0].created_at
+        setCurrentlyLoadedMessages((m) => {
+          const newMessages = [
+            {
+              id: newMessageId,
+              message: message,
+              conversation_id: currentlyOpenedConversation,
+              sender_id: user_id,
+              created_at: newMessageCreatedAt
+            },
+            ...m
+          ]
+          return newMessages.sort((a, b) => a.id - b.id)
+        })
       }
-    setAllSavedMessages((a) => {
-      return [...a, newMessage]
-    })
-    setFilteredMessages((m) => {
-      return [...m, newMessage]
-    })
+    }
+    sendNewMessage()
   }
+
+  useEffect(() => {
+    const getMessagesFromDB = async () => {
+      const { data: messages, error } = await supabase.from("messages").select().eq("conversation_id", currentlyOpenedConversation)
+      setCurrentlyLoadedMessages(messages?.sort((a, b) => a.id - b.id) ?? [])
+    }
+    if (currentlyOpenedConversation != 0)
+      getMessagesFromDB()
+  }, [currentlyOpenedConversation])
 
   return (
       <div className='flex flex-grow w-screen'>
 
         <div id="sidebar" className='border-r-2 flex flex-col'>
           <Search />
-          {conversations.map((conversation) => <Conversation currentlyOpened={currentOpenConversation == conversation.id} handleClick={changeConversation} key={conversation.id} conversation={conversation} />)}
+          {conversations.map((conversation) => (
+            <Conversation currentlyOpened={currentlyOpenedConversation == conversation.id} handleClick={changeConversation} conversation={conversation} key={conversation.conversation_id} />
+          ))}
         </div>
 
         <div id="conversation" className='w-full p-4 relative flex flex-col gap-2'>
-          {filteredMessages.map((m) => <Message key={m.id} message={m} user_id={user_id} />)}
+          {currentlyLoadedMessages.length > 0 ?
+            currentlyLoadedMessages.map((m) => <Message key={m.id} message={m} user_id={user_id} />):
+            <div className='flex flex-col items-center p-4 justify-center'>
+              <h1>Welcome to chat</h1>
+              <h3>Click on a conversation to load</h3>
+            </div>
+          }
           <Keybar handleNewMessage={newMessage} />
         </div>
 

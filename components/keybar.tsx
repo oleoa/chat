@@ -17,10 +17,12 @@ export default function Keybar({ handleNewMessage }: Props) {
   }
 
   return (
-    <div className="absolute bottom-0 p-4 pr-12 flex w-full">
-      <form action={handleAction} className="w-full">
-        <input type="text" className="w-full" name="message" />
-      </form>
+    <div id="keybar-holder">
+      <div id="keybar-stand">
+        <form action={handleAction} className="w-full">
+          <input type="text" className="w-full" name="message" placeholder="Text something" />
+        </form>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { createClient } from '@/supabase/server'
 import Chat from '@/components/chat';
 import { redirect } from 'next/navigation';
+import { Conversation, Participant } from "@/interfaces"
 
 export default async function Home() {
 
@@ -11,10 +12,14 @@ export default async function Home() {
 
   if (!user || user_error)
     redirect('/login')
+  
+  const res = await fetch(process.env.NEXT_PUBLIC_URL+"/api/conversations/"+user.id);
+  if(!res.ok)
+    console.error("Couldn't get the users conversations")
 
-  const { data: conversations, error } = await supabase.rpc("get_user_conversations", { p_user_id: user.id });
-  if (error)
-    console.error("Error getting the conversations at main page: ", error)
+  const response = await res.json()
+  const conversations: Conversation[] = response.data
+  // console.log(conversations)
 
   return (
     <main>

@@ -2,18 +2,21 @@
 
 :root {
   --nav-height: 5rem;
+  --side-width: 15rem;
+  --mini-side-width: 5rem;
+  --keybar-height: 5rem;
 }
 
-body { @apply min-h-screen flex flex-col }
+body { @apply h-screen flex flex-col }
 
 nav {
   height: var(--nav-height);
-  @apply w-full p-4 flex justify-between items-center fixed top-0 left-0 border-b-2;
+  @apply w-full p-4 flex justify-end items-center fixed top-0 left-0 border-b-2 bg-white z-40;
 }
 
 main {
   padding-top: var(--nav-height);
-  @apply h-full w-full flex flex-col items-center gap-4 flex-grow
+  @apply h-screen w-screen flex flex-col items-center gap-4 flex-grow
 }
 
 h1 { @apply text-5xl }
@@ -27,6 +30,56 @@ form { @apply flex flex-col gap-4 }
 label { @apply flex items-center justify-start text-xl }
 input, textarea { @apply border-1 px-4 py-2 rounded-lg }
 
+button:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+}
+
 .btn {
   @apply px-4 py-2 rounded-lg cursor-pointer
+}
+
+#logo {
+  height: var(--nav-height);
+  width: var(--mini-side-width);
+  @media (width >= 64rem) {
+    width: var(--side-width);
+  }
+  @apply fixed top-0 left-0 flex justify-center items-center z-50
+}
+
+#logo-anonymous {
+  height: var(--nav-height);
+  @apply fixed top-0 left-0 w-screen flex justify-center items-center z-50
+}
+
+#sidebar {
+  padding-top: var(--nav-height);
+  width: var(--mini-side-width);
+  @media (width >= 64rem) {
+    width: var(--side-width);
+  }
+  @apply border-r-2 flex flex-col h-screen fixed left-0 top-0 z-30
+}
+
+#messages-holder {
+  padding-left: var(--mini-side-width);
+  @media (width >= 64rem) {
+    padding-left: var(--side-width);
+  }
+  padding-bottom: var(--keybar-height);
+}
+
+#keybar-holder {
+  padding-left: var(--mini-side-width);
+  @media (width >= 64rem) {
+    padding-left: var(--side-width);
+  }
+  @apply fixed bottom-0 left-0 w-full
+}
+
+#keybar-stand {
+  height: var(--keybar-height);
+  @apply p-4 bg-white
 }

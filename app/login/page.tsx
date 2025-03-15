@@ -3,7 +3,7 @@ import { login, signup } from '@/app/auth/actions'
 export default function LoginPage() {
   return (
     <main>
-      <h1 className='text-4xl text-center'>Login</h1>
+      <h1 className='text-4xl text-center py-4'>Login</h1>
       <form className='w-1/3 p-4 border-2 rounded-lg'>
         <label htmlFor="email">Email:</label>
         <input id="email" name="email" type="email" required />

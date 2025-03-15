@@ -1,6 +1,5 @@
 "use client";
 
-import { search } from "@/app/conversations/actions"
 import { useState } from "react";
 
 interface Props {
@@ -16,15 +15,20 @@ export default function Search({ handleNewConversation }: Props) {
   const [message, setMessage] = useState("")
 
   async function handleSearch(formData: FormData) {
-    const res = await search(formData)
-    if (!res || res.length == 0)
+    const username = formData.get("username")
+    const res = await fetch("/api/profile/username/"+username)
+    if (!res.ok) {
       setMessage("Username not found")
-    else
-      handleNewConversation(res[0].user_id)
+      console.error(await res.json())
+    }
+    else {
+      const response = await res.json()
+      handleNewConversation(response.data.user_id)
+    }
   }
 
   return (
-    <div className='p-4 relative border-b-1'>
+    <div className='p-4 relative border-b-1 hidden md:flex'>
       <form action={handleSearch}>
         <input type="text" name='username' placeholder="Search for a username"/>
         {message}

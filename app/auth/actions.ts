@@ -1,11 +1,12 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { createClient } from '@/supabase/server'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/supabase/server'
+import { FormState } from '@/interfaces';
 
-export async function login(formData: FormData) {
+export async function login(prevState: { message: string, success: boolean | null }, formData: FormData): Promise<FormState> {
   const supabase = await createClient()
 
   // type-casting here for convenience
@@ -16,16 +17,14 @@ export async function login(formData: FormData) {
   }
 
   const { error } = await supabase.auth.signInWithPassword(data)
+  if (error)
+    return { message: "Wrong credentials or user not found", success: false }
 
-  if (error) {
-    redirect('/error')
-  }
-
-  revalidatePath('/', 'layout')
+  revalidatePath('/')
   redirect('/')
 }
 
-export async function signup(formData: FormData) {
+export async function signup(prevState: { message: string, success: boolean | null }, formData: FormData): Promise<FormState> {
   const supabase = await createClient()
 
   // type-casting here for convenience
@@ -36,22 +35,15 @@ export async function signup(formData: FormData) {
   }
 
   const { data, error } = await supabase.auth.signUp(signin_data)
-  
-  if (error) {
-    redirect('/error')
-  }
+  if (error || !data || !data.user)
+    return { message: "Error at signing you up", success: false }
 
-  const user_id = data.user?.id ?? ""
-  async function createProfile(user_id: string) {
-    const supabase = await createClient()
-    const { error } = await supabase.from('profiles').insert({ user_id: user_id })
-    if (error) {
-      redirect('/error')
-    }
-  }
-  createProfile(user_id)
+  const user_id = data.user.id
+  const { error: profiles_error } = await supabase.from('profiles').insert({ user_id: user_id })
+  if (profiles_error)
+    return { message: "Error at creating your profile", success: false }
 
-  revalidatePath('/', 'layout')
+  revalidatePath('/')
   redirect('/profile')
 }
 
@@ -61,10 +53,9 @@ export async function signout() {
   
   const { error } = await supabase.auth.signOut()
 
-  if (error) {
-    redirect('/error')
-  }
+  if (error)
+    return { message: "Error at signing you out", success: false }
 
-  revalidatePath('/', 'layout')
+  revalidatePath('/')
   redirect('/')
 }

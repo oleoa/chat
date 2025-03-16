@@ -3,7 +3,7 @@ export interface Profile {
   username: string,
   bio: string | null,
   name: string | null,
-  image: string | null,
+  image: string | null | undefined,
 }
 
 export interface Participant {
@@ -27,3 +27,8 @@ export interface Message {
 
 export interface HandleNewConversation { (user_id: string): void }
 export interface HandleClickFunction { (conversation_id: number): void }
+
+export interface FormState {
+  message: string,
+  success: boolean | null
+}

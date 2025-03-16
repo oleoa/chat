@@ -1,7 +1,8 @@
 import { createClient } from '@/supabase/server'
 import Chat from '@/components/chat';
 import { redirect } from 'next/navigation';
-import { Conversation, Participant } from "@/interfaces"
+import { Conversation } from "@/interfaces"
+import ServerError from '@/components/serverError';
 
 export default async function Home() {
 
@@ -11,15 +12,14 @@ export default async function Home() {
   const user = user_data.user
 
   if (!user || user_error)
-    redirect('/login')
+    return <ServerError message='Error fetching your authentication' />
   
   const res = await fetch(process.env.NEXT_PUBLIC_URL+"/api/conversations/"+user.id);
   if(!res.ok)
-    console.error("Couldn't get the users conversations")
+    return <ServerError message='Error fetching your conversations' />
 
   const response = await res.json()
   const conversations: Conversation[] = response.data
-  // console.log(conversations)
 
   return (
     <main>

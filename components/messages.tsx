@@ -5,11 +5,12 @@ import { Conversation as ConversationInterface, Message as MessageInterface } fr
 interface Props {
   openedConversation: ConversationInterface | null,
   loadedMessages: MessageInterface[],
+  loadedFakeMessages: MessageInterface[],
   user_id: string,
   loadingMessages: boolean
 }
 
-export default function Messages({ openedConversation, loadedMessages, user_id, loadingMessages }: Props) {
+export default function Messages({ openedConversation, loadedMessages, user_id, loadingMessages, loadedFakeMessages }: Props) {
 
   const noChatOppened = <div className='flex flex-col items-center p-4 justify-center'><h1>Welcome to chat</h1><h3>Click on a conversation to load</h3></div>
   const noMessageSent = <div className='flex flex-col items-center p-4 justify-center'><h1>Talk to {openedConversation?.participants[0].profile.username}</h1><h3>Start typing and press Enter</h3></div>
@@ -34,7 +35,8 @@ export default function Messages({ openedConversation, loadedMessages, user_id, 
   ]
   const squeletonMessages = examplesMessages.map((m) => <Message loading={true} key={m.id} message={m} user_id={user_id} />)
 
-  const messages = loadedMessages.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+  const realMessages = loadedMessages.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+  const fakeMessages = loadedFakeMessages.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
 
   return (
     <>
@@ -43,8 +45,9 @@ export default function Messages({ openedConversation, loadedMessages, user_id, 
       {!loadingMessages && openedConversation && (
         loadedMessages.length == 0 ?
         noMessageSent :
-        messages.map((m) => <Message key={m.id} message={m} user_id={user_id} />)
+        realMessages.map((m) => <Message key={m.id} message={m} user_id={user_id} />)
       )}
+      {!loadingMessages && openedConversation && loadedMessages.length > 0 && fakeMessages.map((m) => <Message optmistic={true} key={m.id} message={m} user_id={user_id} />)}
     </>
   )
 }

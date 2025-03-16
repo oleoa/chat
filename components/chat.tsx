@@ -24,6 +24,7 @@ export default function Home({ user_id, conversations }: Props) {
   const [openedConversation, setOpenedConversation] = useState<ConversationInterface | null>(null)
 
   const [loadedMessages, setLoadedMessages] = useState<MessageInterface[]>([])
+  const [loadedFakeMessages, setLoadedFakeMessages] = useState<MessageInterface[]>([])
 
   const [loadingMessages, setLoadingMessages] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -65,6 +66,13 @@ export default function Home({ user_id, conversations }: Props) {
   }
 
   const newMessage = (message: string): void => {
+    setLoadedFakeMessages([{
+      id: "string",
+      conversation_id: openedConversation?.id.toString() ?? "",
+      sender_id: user_id,
+      message: message,
+      created_at: new Date().toISOString()
+    }])
     const sendNewMessage = async () => {
       if (!openedConversation)
         console.error("Trying to create a message for a non opened conversation")
@@ -89,9 +97,8 @@ export default function Home({ user_id, conversations }: Props) {
 
   useEffect(() => {
     if (openedConversation){
-
-      setLoadingMessages(true)
       const getMessagesFromDB = async () => {
+        setLoadingMessages(true)
         const res = await fetch("/api/messages/"+openedConversation.id)
         if (!res.ok)
           console.error("Error at getting the messages")
@@ -109,14 +116,14 @@ export default function Home({ user_id, conversations }: Props) {
         'postgres_changes',
         { event: '*', schema: 'public', table: 'messages', filter: 'conversation_id=eq.'+openedConversation.id },
         (payload) => {
-          const newMessageArrived: MessageInterface = payload.new
-          console.log(newMessageArrived)
+          const newMessageArrived = payload.new as MessageInterface
+          if (newMessageArrived.sender_id == user_id)
+            setLoadedFakeMessages([])
           setLoadedMessages((m) => [...m, newMessageArrived])
         }
       )
       .subscribe()
       setRealtimeChannel(channel)
-      
     }
     return () => {
       if (realtimeChannel)
@@ -126,10 +133,8 @@ export default function Home({ user_id, conversations }: Props) {
 
   // Scroll to bottom on mount and when messages update
   useEffect(() => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 200)
-  }, [loadedMessages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [loadedMessages, loadedFakeMessages]);
 
   return (
     <div className='w-screen h-screen pl-4'>
@@ -137,7 +142,7 @@ export default function Home({ user_id, conversations }: Props) {
       <Sidebar user_id={user_id} handleNewConversation={newConversation} handleChangeConversation={changeConversation} loadedConversations={loadedConversations} openedConversation={openedConversation} />
 
       <div id="messages-holder" className='p-4 flex flex-col gap-2'>
-        <Messages openedConversation={openedConversation} loadedMessages={loadedMessages} user_id={user_id} loadingMessages={loadingMessages} />
+        <Messages openedConversation={openedConversation} loadedMessages={loadedMessages} loadedFakeMessages={loadedFakeMessages} user_id={user_id} loadingMessages={loadingMessages} />
         <span ref={messagesEndRef} />
         <Keybar handleNewMessage={newMessage} />
       </div>

@@ -16,7 +16,7 @@ export default async function Profile() {
   
   return (
     <main>
-      <h1 className='flex gap-4 py-4'>Profile of {profile.username}</h1>
+      <h1 className='flex gap-4 py-4'>{profile.username ? "Profile of "+profile.username : "Set up your profile!"}</h1>
       <UpdateForm profile={profile} />
     </main>
   )

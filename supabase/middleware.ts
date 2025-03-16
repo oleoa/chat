@@ -41,13 +41,20 @@ export async function updateSession(request: NextRequest) {
     !user &&
     // (request.nextUrl.pathname != '/') &&
     !request.nextUrl.pathname.startsWith('/api') &&
-    !request.nextUrl.pathname.startsWith('/ad') &&
     !request.nextUrl.pathname.startsWith('/login') &&
     !request.nextUrl.pathname.startsWith('/auth')
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
     url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  // Verifies if the user has an username setted up
+  const { data: has_a_username_data, error: has_a_username_error } = await supabase.from("profiles").select("username").eq("user_id", user?.id).single()
+  if(!has_a_username_error && !has_a_username_data.username && !request.nextUrl.pathname.startsWith('/profile')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/profile'
     return NextResponse.redirect(url)
   }
 

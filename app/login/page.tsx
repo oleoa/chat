@@ -1,4 +1,3 @@
-import { login, signup } from '@/app/auth/actions'
 import LoginForm from '@/components/loginForm'
 
 export default function LoginPage() {

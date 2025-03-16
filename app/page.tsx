@@ -1,6 +1,5 @@
 import { createClient } from '@/supabase/server'
 import Chat from '@/components/chat';
-import { redirect } from 'next/navigation';
 import { Conversation } from "@/interfaces"
 import ServerError from '@/components/serverError';
 

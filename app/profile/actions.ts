@@ -16,10 +16,14 @@ export async function update(prevState: { message: string, success: boolean | nu
     redirect('/error')
   }
 
+  const username = formData.get('username') as string
+  if(!username)
+    return { success: false, message: 'Please provide an username' }
+
   const profile_data: ProfileInterface = {
     user_id: user.id,
-    name: formData.get('name') as string,
     username: formData.get('username') as string,
+    name: formData.get('name') as string,
     bio: formData.get('bio') as string,
     image: undefined
   }
@@ -37,8 +41,8 @@ export async function update(prevState: { message: string, success: boolean | nu
   const { error } = await supabase.from("profiles").update(profile_data).eq("user_id", user.id)
 
   if (error)
-    return { success: false, message: 'Error updating the user.' }
+    return { success: false, message: 'Error updating the user' }
 
   revalidatePath('/profile')
-  return { success: true, message: 'User data updated.' }
+  return { success: true, message: 'User data updated' }
 }

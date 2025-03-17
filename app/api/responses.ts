@@ -8,6 +8,6 @@ export default class Res
   created(data: any) { return NextResponse.json({ status: "Success", data: data }, { status: 201 }) }
 
   // When it fails, return a message to the client
-  server_error(message: string) { return NextResponse.json({ status: "Server Error", message: message }, { status: 500 }) }
-  bad_request(message: string) { return NextResponse.json({ status: "Bad Request", message: message }, { status: 400 }) }
+  server_error(message: string) { return NextResponse.json({ status: "Fail", message: message }, { status: 500 }) }
+  bad_request(message: string) { return NextResponse.json({ status: "Fail", message: message }, { status: 400 }) }
 }

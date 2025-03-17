@@ -1,4 +1,4 @@
-import UpdateForm from '@/components/profile/updateForm'
+import Form from './form'
 import ServerError from '@/components/serverError'
 import { createClient } from '@/supabase/server'
 
@@ -17,7 +17,7 @@ export default async function Profile() {
   return (
     <main>
       <h1 className='flex gap-4 py-4'>{profile.username ? "Profile of "+profile.username : "Set up your profile!"}</h1>
-      <UpdateForm profile={profile} />
+      <Form profile={profile} />
     </main>
   )
 }

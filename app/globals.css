@@ -40,6 +40,10 @@ textarea:focus {
   @apply px-4 py-2 rounded-lg cursor-pointer
 }
 
+.pfp {
+  @apply rounded-full object-cover
+}
+
 #logo {
   height: var(--nav-height);
   width: var(--mini-side-width);

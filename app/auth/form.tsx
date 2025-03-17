@@ -4,14 +4,14 @@ import { useActionState } from "react";
 import { login, signup } from '@/app/auth/actions'
 
 import { FormState } from '@/interfaces';
-import ActionState from "./actionState";
+import ActionState from "../../components/actionState";
 
 const initialState: FormState = {
   message: '',
   success: null,
 }
 
-export default function UpdateForm() {
+export default function Form() {
 
   const [loginState, loginAction, loginPending] = useActionState<FormState, FormData>(login, initialState)
   const [signupState, signupAction, signupPending] = useActionState<FormState, FormData>(signup, initialState)

@@ -14,11 +14,14 @@ export default async function Home() {
     return <ServerError message='Error fetching your authentication' />
   
   const res = await fetch(process.env.NEXT_PUBLIC_URL+"/api/conversations/"+user.id);
-  if(!res.ok)
+  if(!res.ok){
+    console.error(await res.json())
     return <ServerError message='Error fetching your conversations' />
+  }
 
   const response = await res.json()
   const conversations: Conversation[] = response.data
+  console.log(conversations)
 
   return (
     <main>

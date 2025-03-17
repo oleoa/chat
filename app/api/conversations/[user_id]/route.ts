@@ -19,6 +19,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ user_id:
       id,
       is_group,
       name,
+      last_message (
+        message,
+        sent_at: created_at,
+        from: profiles (
+          id: user_id,
+          username,
+          name
+        )
+      ),
       participants (
         profile: profiles (
           user_id,

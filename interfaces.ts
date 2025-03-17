@@ -11,10 +11,23 @@ export interface Participant {
 }
 
 export interface Conversation {
-  id: number,
-  name: string | null,
-  is_group: boolean,
+  id: number
+  name: string | null
+  is_group: boolean
   participants: Participant[]
+  last_message: LastMessage | null
+}
+
+export interface LastMessage {
+  message: string
+  sent_at: string
+  from: LastMessageProfile
+}
+
+export interface LastMessageProfile {
+  id: string
+  username: string
+  name: string | null
 }
 
 export interface Message {
@@ -30,5 +43,6 @@ export interface HandleClickFunction { (conversation_id: number): void }
 
 export interface FormState {
   message: string,
-  success: boolean | null
+  success: boolean | null,
+  error?: null | undefined | any
 }

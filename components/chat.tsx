@@ -51,32 +51,25 @@ export default function Home({ user_id, conversations }: Props) {
           "Content-Type": "application/json"
         }
       })
-      if (res.ok) {
-        const resopnse = await res.json()
-        const newConversations = resopnse.data
-        if (!newConversations)
-          console.error("Error at getting the conversations back")
-        else
-          setLoadedConversations(newConversations)
-      } else {
-        console.error("Error at creating the conversation: ", await res.json())
+      if (!res.ok) {
+        console.error("Error at getting the conversations back")
       }
     }
     createNewConversation()
   }
 
   const newMessage = (message: string): void => {
-    setLoadedFakeMessages([{
-      id: "string",
-      conversation_id: openedConversation?.id.toString() ?? "",
-      sender_id: user_id,
-      message: message,
-      created_at: new Date().toISOString()
-    }])
     const sendNewMessage = async () => {
       if (!openedConversation)
         console.error("Trying to create a message for a non opened conversation")
       else {
+        setLoadedFakeMessages([{
+          id: "string",
+          conversation_id: openedConversation.id.toString(),
+          sender_id: user_id,
+          message: message,
+          created_at: new Date().toISOString()
+        }])
         const res = await fetch("/api/messages", {
           method: "POST",
           body: JSON.stringify({
@@ -111,7 +104,7 @@ export default function Home({ user_id, conversations }: Props) {
       }
       getMessagesFromDB()
 
-      const channel = supabase.channel('custom-filter-channel')
+      const channel = supabase.channel('messages-channel')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'messages', filter: 'conversation_id=eq.'+openedConversation.id },
@@ -131,22 +124,38 @@ export default function Home({ user_id, conversations }: Props) {
     }
   }, [openedConversation])
 
-  // Scroll to bottom on mount and when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [loadedMessages, loadedFakeMessages]);
 
+  useEffect(() => {
+    const channel = supabase.channel('conversations-channel')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'participants', filter: 'user_id=eq.'+user_id },
+        async (payload) => {
+          const res = await fetch("/api/conversations/"+user_id)
+          if(!res.ok)
+            console.error("Error fetching your conversations")
+          else {
+            const response = await res.json()
+            const conversations: ConversationInterface[] = response.data
+            setLoadedConversations(conversations)
+          }
+        }
+      )
+      .subscribe()
+      setRealtimeChannel(channel)
+  }, [])
+
   return (
     <div className='w-screen h-screen pl-4'>
-
       <Sidebar user_id={user_id} handleNewConversation={newConversation} handleChangeConversation={changeConversation} loadedConversations={loadedConversations} openedConversation={openedConversation} />
-
       <div id="messages-holder" className='p-4 flex flex-col gap-2'>
         <Messages openedConversation={openedConversation} loadedMessages={loadedMessages} loadedFakeMessages={loadedFakeMessages} user_id={user_id} loadingMessages={loadingMessages} />
         <span ref={messagesEndRef} />
         <Keybar handleNewMessage={newMessage} />
       </div>
-
     </div>
   );
 }

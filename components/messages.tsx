@@ -12,8 +12,9 @@ interface Props {
 
 export default function Messages({ openedConversation, loadedMessages, user_id, loadingMessages, loadedFakeMessages }: Props) {
 
+  const filtered_participants = openedConversation?.participants.filter((participant) => participant.profile.user_id != user_id)
   const noChatOppened = <div className='flex flex-col items-center p-4 justify-center'><h1>Welcome to chat</h1><h3>Click on a conversation to load</h3></div>
-  const noMessageSent = <div className='flex flex-col items-center p-4 justify-center'><h1>Talk to {openedConversation?.participants[0].profile.username}</h1><h3>Start typing and press Enter</h3></div>
+  const noMessageSent = <div className='flex flex-col items-center p-4 justify-center'><h1>Talk to {filtered_participants && filtered_participants[0].profile.username}</h1><h3>Start typing and press Enter</h3></div>
 
   const examplesMessages: MessageInterface[] = [
     { id:"0" , message: "ㅤㅤㅤㅤㅤㅤㅤㅤ", conversation_id:"0", sender_id:user_id, created_at:"0" },

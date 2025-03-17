@@ -23,7 +23,7 @@ export default function UpdateForm({ profile }: Props) {
     <form action={formAction} className='border-2 rounded-lg p-4'>
       <div className='flex gap-4 justify-center items-center'>
         <label htmlFor="fileField">
-          <img src={profile.image ?? "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"} alt="User Image" className='rounded-full h-24 cursor-pointer' />
+          <img src={profile.image ?? "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"} alt="User Image" className='rounded-full h-24 w-24 cursor-pointer' />
         </label>
         <input type="file" id="fileField" name="image" accept="image/*" className='hidden'/>
         <div className='flex flex-col gap-4'>

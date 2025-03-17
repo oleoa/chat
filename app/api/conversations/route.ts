@@ -43,13 +43,8 @@ export async function POST(req: Request) {
       if (new_participants_error)
         return Response.server_error(new_participants_error.message)
 
-      else {
-        const { data: newConversations, error: newConversationsError } = await supabase.rpc("get_user_conversations", { p_user_id: data.from_user_id });
-        if (newConversationsError)
-          return Response.server_error(newConversationsError.message)
-        else
-          return Response.created(newConversations)
-      }
+      if(new_conversation)
+        return Response.created(new_conversation.id)
     }
     
   } catch (error) {

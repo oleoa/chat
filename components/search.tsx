@@ -28,7 +28,7 @@ export default function Search({ handleNewConversation }: Props) {
   }
 
   return (
-    <div className='p-4 relative border-b-1 hidden md:flex'>
+    <div id="search" className='p-4 border-b-2 hidden md:flex'>
       <form action={handleSearch}>
         <input type="text" name='username' placeholder="Search for a username"/>
         {message}

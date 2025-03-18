@@ -5,6 +5,7 @@
   --side-width: 15rem;
   --mini-side-width: 5rem;
   --keybar-height: 5rem;
+  --profile-row-height: 5rem;
 }
 
 body { @apply h-screen flex flex-col }
@@ -46,10 +47,7 @@ textarea:focus {
 
 #logo {
   height: var(--nav-height);
-  width: var(--mini-side-width);
-  @media (width >= 64rem) {
-    width: var(--side-width);
-  }
+  width: var(--side-width);
   @apply fixed top-0 left-0 flex justify-center items-center z-50
 }
 
@@ -60,26 +58,31 @@ textarea:focus {
 
 #sidebar {
   padding-top: var(--nav-height);
-  width: var(--mini-side-width);
-  @media (width >= 64rem) {
-    width: var(--side-width);
-  }
+  width: var(--side-width);
   @apply border-r-2 flex flex-col h-screen fixed left-0 top-0 z-30
 }
 
-#messages-holder {
-  padding-left: var(--mini-side-width);
-  @media (width >= 64rem) {
-    padding-left: var(--side-width);
-  }
+#chat {
+  padding-left: var(--side-width);
+}
+
+#search,
+#profile-row {
+  height: var(--profile-row-height);
+}
+
+#profile-row {
+  position: sticky;
+  top: var(--nav-height);
+  @apply z-30 w-full sticky p-4 border-b-2 bg-white;
+}
+
+#conversation {
   padding-bottom: var(--keybar-height);
 }
 
 #keybar-holder {
-  padding-left: var(--mini-side-width);
-  @media (width >= 64rem) {
-    padding-left: var(--side-width);
-  }
+  padding-left: var(--side-width);
   @apply fixed bottom-0 left-0 w-full
 }
 

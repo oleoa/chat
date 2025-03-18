@@ -20,12 +20,17 @@ export async function GET(req: Request, { params }: { params: Promise<{ user_id:
       is_group,
       name,
       last_message (
+        id,
+        conversation_id,
+        sender_id,
         message,
-        sent_at: created_at,
+        created_at,
         from: profiles (
-          id: user_id,
+          user_id,
           username,
-          name
+          name,
+          bio,
+          image
         )
       ),
       participants (

@@ -21,11 +21,10 @@ export default async function Home() {
 
   const response = await res.json()
   const conversations: Conversation[] = response.data
-  console.log(conversations)
 
   return (
     <main>
-      <Chat user_id={user.id} conversations={conversations} />
+      <Chat user_id={user.id} loadedConversations={conversations} />
     </main>
   );
 }
